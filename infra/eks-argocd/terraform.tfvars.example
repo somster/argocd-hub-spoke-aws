@@ -1,0 +1,36 @@
+aws_region                     = "us-east-1"
+environment                    = "dev"
+cluster_name                   = "argocd-auto-eks"
+kubernetes_version             = "1.32"
+cluster_endpoint_public_access = true
+
+enable_eks_auto_mode    = true
+eks_auto_mode_node_pools = ["system", "general-purpose"]
+
+enable_argocd_capability = true
+argocd_capability_name   = "argocd"
+argocd_namespace         = "argocd"
+
+# Optional: strongly recommended for ARGOCD capability.
+# IAM Identity Center instance details are auto-discovered. By default,
+# Terraform resolves these group display names to their backing SSO group IDs:
+#   ADMIN  -> ArgoCD-Admins
+#   EDITOR -> ArgoCD-Editors
+#   VIEWER -> ArgoCD-Viewers
+#
+# argocd_idc_region        = "us-east-1"
+#
+# Override them here only if your IAM Identity Center group names differ.
+#
+# argocd_admin_group_name  = "Platform-ArgoCD-Admins"
+# argocd_editor_group_name = "Platform-ArgoCD-Editors"
+# argocd_viewer_group_name = "Platform-ArgoCD-Viewers"
+
+# Adjust CIDRs if they overlap with existing networks.
+vpc_cidr             = "10.42.0.0/16"
+public_subnet_cidrs  = ["10.42.0.0/24", "10.42.1.0/24", "10.42.2.0/24"]
+private_subnet_cidrs = ["10.42.10.0/24", "10.42.11.0/24", "10.42.12.0/24"]
+
+tags = {
+  Owner = "platform-team"
+}

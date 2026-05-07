@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-appset
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - environment: dev
+            path: argocd/apps/dev
+            namespace: guestbook-dev
+          - environment: test
+            path: argocd/apps/test
+            namespace: guestbook-test
+          - environment: prod
+            path: argocd/apps/prod
+            namespace: guestbook-prod
+  template:
+    metadata:
+      name: '{{environment}}-platform-app'
+      labels:
+        environment: '{{environment}}'
+    spec:
+      project: platform
+      source:
+        repoURL: https://github.com/REPLACE_ME_ORG/REPLACE_ME_REPO.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

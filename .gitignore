@@ -1,0 +1,7 @@
+# Consolidated .gitignore (merged from subdirectories)
+# Ignore editor settings
+.vscode
+
+# Ignore Terraform working directories anywhere in the repository
+**/.terraform/
+**/.terraform/**
