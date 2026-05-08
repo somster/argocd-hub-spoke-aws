@@ -3,11 +3,6 @@ output "idc_instance_arn" {
   value       = local.resolved_idc_instance_arn
 }
 
-output "idc_region" {
-  description = "IAM Identity Center region (falls back to AWS region if not specified)"
-  value       = coalesce(var.argocd_idc_region, var.aws_region)
-}
-
 output "admin_group_id" {
   description = "Resolved IAM Identity Center group ID for ArgoCD admins"
   value       = local.resolved_admin_group_id

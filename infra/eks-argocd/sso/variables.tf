@@ -16,17 +16,6 @@ variable "argocd_viewer_group_name" {
   default     = "ArgoCD-Viewers"
 }
 
-variable "argocd_idc_region" {
-  description = "Optional IAM Identity Center region. Falls back to AWS region if not specified."
-  type        = string
-  default     = null
-}
-
-variable "aws_region" {
-  description = "AWS region for resources"
-  type        = string
-}
-
 variable "enable_argocd_capability" {
   description = "Enable native EKS ArgoCD capability via EKS capability API"
   type        = bool

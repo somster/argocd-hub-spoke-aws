@@ -23,8 +23,6 @@ module "sso" {
   argocd_admin_group_name  = var.argocd_admin_group_name
   argocd_editor_group_name = var.argocd_editor_group_name
   argocd_viewer_group_name = var.argocd_viewer_group_name
-  argocd_idc_region        = var.argocd_idc_region
-  aws_region               = var.aws_region
 }
 
 module "eks" {
@@ -38,14 +36,18 @@ module "eks" {
   enable_argocd_capability       = var.enable_argocd_capability
   argocd_capability_name         = var.argocd_capability_name
   argocd_namespace               = var.argocd_namespace
-  aws_region                     = var.aws_region
   environment                    = var.environment
   tags                           = var.tags
   vpc_id                         = module.shared.vpc_id
   private_subnets                = module.shared.private_subnets
-  sso_idc_instance_arn           = module.sso.idc_instance_arn
-  sso_idc_region                 = module.sso.idc_region
-  sso_rbac_role_mappings         = module.sso.rbac_role_mappings
+  argocd_capability_configuration = var.enable_argocd_capability ? {
+    argo_cd = {
+      aws_idc = {
+        idc_instance_arn = module.sso.idc_instance_arn
+      }
+      rbac_role_mappings = module.sso.rbac_role_mappings
+    }
+  } : null
 
   depends_on = [module.shared, module.sso]
 }

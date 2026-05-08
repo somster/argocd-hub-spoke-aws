@@ -82,12 +82,6 @@ variable "argocd_namespace" {
   default     = "argocd"
 }
 
-variable "argocd_idc_region" {
-  description = "Optional IAM Identity Center region"
-  type        = string
-  default     = null
-}
-
 variable "argocd_admin_group_name" {
   description = "Display name of the IAM Identity Center group to map to ArgoCD ADMIN role. This is the friendly SSO group name Terraform resolves to the actual group ID via a data source lookup."
   type        = string

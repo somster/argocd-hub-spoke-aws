@@ -5,3 +5,6 @@
 # Ignore Terraform working directories anywhere in the repository
 **/.terraform/
 **/.terraform/**
+
+# Ignore Terraform state files anywhere in the repository
+**/*.tfstate*

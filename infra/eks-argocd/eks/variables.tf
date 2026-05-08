@@ -45,11 +45,6 @@ variable "argocd_namespace" {
   default     = "argocd"
 }
 
-variable "aws_region" {
-  description = "AWS region for resources"
-  type        = string
-}
-
 variable "environment" {
   description = "Environment name used for naming and tags"
   type        = string
@@ -73,18 +68,9 @@ variable "private_subnets" {
   type        = list(string)
 }
 
-# Inputs from SSO module
-variable "sso_idc_instance_arn" {
-  description = "IAM Identity Center instance ARN from SSO module"
-  type        = string
-}
-
-variable "sso_idc_region" {
-  description = "IAM Identity Center region from SSO module"
-  type        = string
-}
-
-variable "sso_rbac_role_mappings" {
-  description = "RBAC role mappings from SSO module"
-  type        = list(any)
+# ArgoCD capability configuration (pre-built by root module)
+variable "argocd_capability_configuration" {
+  description = "Pre-built ArgoCD capability configuration with SSO and RBAC settings"
+  type        = any
+  default     = null
 }

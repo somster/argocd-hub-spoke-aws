@@ -1,24 +1,14 @@
 # =============================================================================
 # EKS + ArgoCD Terraform Makefile
 # =============================================================================
-# Sub-components: shared (VPC/networking), sso (IAM Identity Center), eks
+# Stack modules: shared (VPC/networking), sso (IAM Identity Center), eks
+# This repository is managed as a single Terraform root module. Routine
+# operations should run at the root without using -target.
 # Usage:
 #   make init                  - initialise all providers
 #   make plan                  - plan all modules
 #   make deploy                - deploy all modules
 #   make destroy               - destroy all modules (safeguarded with prompt)
-#
-#   make deploy-shared         - deploy shared (VPC) only
-#   make deploy-sso            - deploy SSO only
-#   make deploy-eks            - deploy EKS only
-#
-#   make plan-shared           - plan shared only
-#   make plan-sso              - plan SSO only
-#   make plan-eks              - plan EKS only
-#
-#   make destroy-eks           - destroy EKS only
-#   make destroy-sso           - destroy SSO only
-#   make destroy-shared        - destroy shared only
 #
 #   make output                - show all outputs
 # =============================================================================
@@ -30,12 +20,11 @@ TFVARS_FILE  ?= terraform.tfvars
 # Terraform binary (override with TF=tofu for OpenTofu)
 TF           ?= terraform
 
-# Auto-approve flag for non-interactive runs (e.g. CI=1 make deploy)
-ifeq ($(CI),1)
-  AUTO_APPROVE := -auto-approve
-else
-  AUTO_APPROVE :=
-endif
+# Optional flags for terraform init (for example: INIT_FLAGS=-upgrade)
+INIT_FLAGS   ?=
+
+# Always auto-approve Terraform apply operations.
+AUTO_APPROVE := -auto-approve
 
 # Shared var-file flag (only applied when the file exists)
 VARFILE_FLAG := $(if $(wildcard $(TF_DIR)/$(TFVARS_FILE)),-var-file=$(TFVARS_FILE),)
@@ -45,7 +34,7 @@ VARFILE_FLAG := $(if $(wildcard $(TF_DIR)/$(TFVARS_FILE)),-var-file=$(TFVARS_FIL
 # -----------------------------------------------------------------------------
 # Phony targets
 # -----------------------------------------------------------------------------
-.PHONY: help init validate fmt \
+.PHONY: help init init-upgrade validate fmt \
         plan plan-shared plan-sso plan-eks \
         deploy deploy-shared deploy-sso deploy-eks \
         destroy destroy-shared destroy-sso destroy-eks \
@@ -60,26 +49,27 @@ help:
 	@echo ""
 	@echo "Lifecycle:"
 	@echo "  init              Initialise Terraform providers and modules"
+	@echo "  init-upgrade      Initialise providers and upgrade locked modules/providers"
 	@echo "  validate          Validate configuration"
 	@echo "  fmt               Format all .tf files"
 	@echo ""
 	@echo "Plan (dry-run):"
 	@echo "  plan              Plan all modules"
-	@echo "  plan-shared       Plan shared (VPC/networking) only"
-	@echo "  plan-sso          Plan SSO (IAM Identity Center) only"
-	@echo "  plan-eks          Plan EKS cluster only"
+	@echo "  plan-shared       Unsupported for this root module; use 'make plan'"
+	@echo "  plan-sso          Unsupported for this root module; use 'make plan'"
+	@echo "  plan-eks          Unsupported for this root module; use 'make plan'"
 	@echo ""
 	@echo "Deploy:"
-	@echo "  deploy            Deploy all modules  (shared → sso → eks)"
-	@echo "  deploy-shared     Deploy shared (VPC/networking) only"
-	@echo "  deploy-sso        Deploy SSO (IAM Identity Center) only"
-	@echo "  deploy-eks        Deploy EKS cluster only"
+	@echo "  deploy            Deploy the full stack"
+	@echo "  deploy-shared     Unsupported for this root module; use 'make deploy'"
+	@echo "  deploy-sso        Unsupported for this root module; use 'make deploy'"
+	@echo "  deploy-eks        Unsupported for this root module; use 'make deploy'"
 	@echo ""
-	@echo "Destroy (reverse order):"
-	@echo "  destroy           Destroy all resources  (eks → sso → shared)"
-	@echo "  destroy-eks       Destroy EKS cluster only"
-	@echo "  destroy-sso       Destroy SSO resources only"
-	@echo "  destroy-shared    Destroy shared (VPC/networking) only"
+	@echo "Destroy:"
+	@echo "  destroy           Destroy the full stack"
+	@echo "  destroy-eks       Unsupported for this root module; use 'make destroy'"
+	@echo "  destroy-sso       Unsupported for this root module; use 'make destroy'"
+	@echo "  destroy-shared    Unsupported for this root module; use 'make destroy'"
 	@echo ""
 	@echo "Other:"
 	@echo "  output            Show Terraform outputs"
@@ -88,6 +78,7 @@ help:
 	@echo "Variables:"
 	@echo "  TFVARS_FILE       Var-file to use (default: terraform.tfvars)"
 	@echo "  TF                Terraform binary (default: terraform; use TF=tofu for OpenTofu)"
+	@echo "  INIT_FLAGS        Extra flags for 'terraform init' (example: INIT_FLAGS=-upgrade)"
 	@echo "  CI=1              Skip interactive approval prompts"
 	@echo ""
 
@@ -96,7 +87,10 @@ help:
 # -----------------------------------------------------------------------------
 init:
 	@echo "==> Initialising root module..."
-	cd $(TF_DIR) && $(TF) init -upgrade
+	cd $(TF_DIR) && $(TF) init $(INIT_FLAGS)
+
+init-upgrade: INIT_FLAGS := -upgrade
+init-upgrade: init
 
 # -----------------------------------------------------------------------------
 # Validate / Format
@@ -117,79 +111,58 @@ plan: init
 	cd $(TF_DIR) && $(TF) plan $(VARFILE_FLAG)
 
 # -----------------------------------------------------------------------------
-# Plan — individual modules (targeted)
+# Plan — individual modules
 # -----------------------------------------------------------------------------
-plan-shared: init
-	@echo "==> Planning module: shared..."
-	cd $(TF_DIR) && $(TF) plan $(VARFILE_FLAG) \
-	  -target=module.shared
+plan-shared:
+	@echo "ERROR: module-specific plans are not supported for this Terraform root module. Use 'make plan'."
+	@exit 1
 
-plan-sso: init
-	@echo "==> Planning module: sso..."
-	cd $(TF_DIR) && $(TF) plan $(VARFILE_FLAG) \
-	  -target=module.sso
+plan-sso:
+	@echo "ERROR: module-specific plans are not supported for this Terraform root module. Use 'make plan'."
+	@exit 1
 
-plan-eks: init
-	@echo "==> Planning module: eks..."
-	cd $(TF_DIR) && $(TF) plan $(VARFILE_FLAG) \
-	  -target=module.eks
+plan-eks:
+	@echo "ERROR: module-specific plans are not supported for this Terraform root module. Use 'make plan'."
+	@exit 1
 
 # -----------------------------------------------------------------------------
-# Deploy — full stack  (shared → sso → eks to respect dependencies)
+# Deploy — full stack
 # -----------------------------------------------------------------------------
 deploy: init
-	@echo "==> Deploying all modules (shared → sso → eks)..."
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.shared $(AUTO_APPROVE)
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.sso $(AUTO_APPROVE)
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.eks $(AUTO_APPROVE)
-	@echo "==> Full deployment complete."
+	@echo "==> Deploying full stack..."
+	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) $(AUTO_APPROVE)
+	@echo "==> Deployment complete."
 
 # -----------------------------------------------------------------------------
 # Deploy — individual modules
 # -----------------------------------------------------------------------------
 deploy-shared: init
-	@echo "==> Deploying module: shared (VPC/networking)..."
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.shared $(AUTO_APPROVE)
+	@echo "ERROR: module-specific deploys are not supported for this Terraform root module. Use 'make deploy'."
+	@exit 1
 
 deploy-sso: init
-	@echo "==> Deploying module: sso (IAM Identity Center)..."
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.sso $(AUTO_APPROVE)
+	@echo "ERROR: module-specific deploys are not supported for this Terraform root module. Use 'make deploy'."
+	@exit 1
 
 deploy-eks: init
-	@echo "==> Deploying module: eks (EKS cluster)..."
-	cd $(TF_DIR) && $(TF) apply $(VARFILE_FLAG) \
-	  -target=module.eks $(AUTO_APPROVE)
+	@echo "ERROR: module-specific deploys are not supported for this Terraform root module. Use 'make deploy'."
+	@exit 1
 
 # -----------------------------------------------------------------------------
-# Destroy — full stack  (reverse order: eks → sso → shared)
+# Destroy — full stack
 # -----------------------------------------------------------------------------
 destroy:
 ifeq ($(CI),1)
-	@echo "==> Destroying all modules (eks → sso → shared)..."
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.eks -auto-approve
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.sso -auto-approve
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.shared -auto-approve
-	@echo "==> Full teardown complete."
+	@echo "==> Destroying full stack..."
+	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) -auto-approve
+	@echo "==> Teardown complete."
 else
 	@echo ""
-	@echo "WARNING: This will destroy ALL managed resources (eks → sso → shared)."
+	@echo "WARNING: This will destroy ALL managed resources in this stack."
 	@read -p "Type 'yes' to confirm: " CONFIRM && [ "$$CONFIRM" = "yes" ] || \
 	  (echo "Aborted." && exit 1)
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.eks -auto-approve
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.sso -auto-approve
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.shared -auto-approve
-	@echo "==> Full teardown complete."
+	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) -auto-approve
+	@echo "==> Teardown complete."
 endif
 
 # -----------------------------------------------------------------------------
@@ -197,44 +170,32 @@ endif
 # -----------------------------------------------------------------------------
 destroy-eks:
 ifeq ($(CI),1)
-	@echo "==> Destroying module: eks..."
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.eks -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 else
 	@echo ""
-	@echo "WARNING: This will destroy the EKS cluster and related resources."
-	@read -p "Type 'yes' to confirm: " CONFIRM && [ "$$CONFIRM" = "yes" ] || \
-	  (echo "Aborted." && exit 1)
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.eks -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 endif
 
 destroy-sso:
 ifeq ($(CI),1)
-	@echo "==> Destroying module: sso..."
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.sso -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 else
 	@echo ""
-	@echo "WARNING: This will destroy SSO (IAM Identity Center) resources."
-	@read -p "Type 'yes' to confirm: " CONFIRM && [ "$$CONFIRM" = "yes" ] || \
-	  (echo "Aborted." && exit 1)
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.sso -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 endif
 
 destroy-shared:
 ifeq ($(CI),1)
-	@echo "==> Destroying module: shared..."
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.shared -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 else
 	@echo ""
-	@echo "WARNING: This will destroy shared networking (VPC, subnets, etc.)."
-	@read -p "Type 'yes' to confirm: " CONFIRM && [ "$$CONFIRM" = "yes" ] || \
-	  (echo "Aborted." && exit 1)
-	cd $(TF_DIR) && $(TF) destroy $(VARFILE_FLAG) \
-	  -target=module.shared -auto-approve
+	@echo "ERROR: module-specific destroys are not supported for this Terraform root module. Use 'make destroy'."
+	@exit 1
 endif
 
 # -----------------------------------------------------------------------------
