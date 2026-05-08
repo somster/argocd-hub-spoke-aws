@@ -45,7 +45,7 @@ module "eks" {
       aws_idc = {
         idc_instance_arn = module.sso.idc_instance_arn
       }
-      rbac_role_mappings = module.sso.rbac_role_mappings
+      rbac_role_mapping = module.sso.rbac_role_mappings
     }
   } : null
 

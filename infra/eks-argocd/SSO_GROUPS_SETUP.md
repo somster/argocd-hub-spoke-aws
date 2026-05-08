@@ -61,15 +61,15 @@ Builds the proper structure for ArgoCD capability:
 rbac_role_mappings = [
   {
     role       = "ADMIN"
-    identities = [{ id = "group-id-123", type = "SSO_GROUP" }]
+    identity = [{ id = "group-id-123", type = "SSO_GROUP" }]
   },
   {
     role       = "EDITOR"
-    identities = [{ id = "group-id-456", type = "SSO_GROUP" }]
+    identity = [{ id = "group-id-456", type = "SSO_GROUP" }]
   },
   {
     role       = "VIEWER"
-    identities = [{ id = "group-id-789", type = "SSO_GROUP" }]
+    identity = [{ id = "group-id-789", type = "SSO_GROUP" }]
   }
 ]
 ```
@@ -92,7 +92,7 @@ argocd_capability_configuration = {
       idc_instance_arn = var.sso_idc_instance_arn
       idc_region       = var.sso_idc_region
     }
-    rbac_role_mappings = var.sso_rbac_role_mappings
+    rbac_role_mapping = var.sso_rbac_role_mappings
   }
 }
 ```

@@ -15,16 +15,16 @@ locals {
   rbac_role_mappings = [
     for mapping in [
       local.resolved_admin_group_id != null ? {
-        role       = "ADMIN"
-        identities = [{ id = local.resolved_admin_group_id, type = "SSO_GROUP" }]
+        role     = "ADMIN"
+        identity = [{ id = local.resolved_admin_group_id, type = "SSO_GROUP" }]
       } : null,
       local.resolved_editor_group_id != null ? {
-        role       = "EDITOR"
-        identities = [{ id = local.resolved_editor_group_id, type = "SSO_GROUP" }]
+        role     = "EDITOR"
+        identity = [{ id = local.resolved_editor_group_id, type = "SSO_GROUP" }]
       } : null,
       local.resolved_viewer_group_id != null ? {
-        role       = "VIEWER"
-        identities = [{ id = local.resolved_viewer_group_id, type = "SSO_GROUP" }]
+        role     = "VIEWER"
+        identity = [{ id = local.resolved_viewer_group_id, type = "SSO_GROUP" }]
       } : null,
     ] : mapping if mapping != null
   ]
