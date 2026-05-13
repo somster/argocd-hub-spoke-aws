@@ -22,7 +22,7 @@ Design and generate Infrastructure as Code templates to create an ArgoCD pipelin
 
 Generate the full IaC template set and documentation:
 
-1. Terraform file structure:
+1. Terraform file structure:d
 	- providers.tf
 	- versions.tf
 	- variables.tf
