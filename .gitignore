@@ -1,4 +1,7 @@
 # Consolidated .gitignore (merged from subdirectories)
+# Ignore macOS Finder metadata
+.DS_Store
+
 # Ignore editor settings
 .vscode
 
