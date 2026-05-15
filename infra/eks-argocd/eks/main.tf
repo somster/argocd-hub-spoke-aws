@@ -15,9 +15,9 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   addons = {
-    coredns = {}
-    kube-proxy = {}
-    vpc-cni = {}
+    coredns                = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
     eks-pod-identity-agent = {}
   }
 
@@ -39,7 +39,7 @@ module "argocd_eks_capability" {
   cluster_name = module.eks.cluster_name
   type         = "ARGOCD"
 
-  configuration            = local.argocd_capability_configuration
+  configuration             = local.argocd_capability_configuration
   delete_propagation_policy = "RETAIN"
 
   # Baseline ECR pull permissions for images managed by the capability.

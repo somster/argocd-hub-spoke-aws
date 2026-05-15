@@ -59,7 +59,7 @@ This document provides a comprehensive analysis of three approaches to managing 
 |---|---|---|
 | - No native support for drift detection<br>- requires a custom implementation (e.g., scheduled `terraform plan` runs in CI/CD) | - **Native feature**: Scheduled refresh and run triggers<br>- Automatic notifications on drift detection<br>- Integrates with webhooks for remediation<br>- Can auto-remediate on policy rules | - **Advanced**: Continuous drift detection with intelligent scheduling<br>- Automatic notifications via Slack, webhooks, etc.<br>- Policy-driven auto-remediation<br>- Tracks drift trends over time<br>- Supports drift suppression rules per stack |
 
-**In-Going view:** Drift detection is a must have but this is not supported out of the box with native terraform, Organizations leaned on tight RBAC controls to modify deployed resources outside the pipeline. This on of the few areas a managed tooling has the advantage by having this off the shelf capability. 
+**In-Going view:** Drift detection is a must have but this is not supported out of the box with native terraform, Organizations leaned on tight RBAC controls to modify deployed resources outside the pipeline. This would be one of few areas a managed tooling has the advantage by having this off the shelf capability. 
 
 **Verdict** - Managed platforms 
 
@@ -85,7 +85,7 @@ This document provides a comprehensive analysis of three approaches to managing 
 
 **In-Going view:** Spacelift has the boardest support but this is not an advantage as we always advice to standardize on a single tool to reduce congnitive load and operational complexity. 
 
-Verdict - Parity, multi-provider support is NOT a strong requirement for the use case and standardizing on Terraform is advisable to reduce operational complexity and cognitive load.
+Verdict - Parity, multi-provider support is NOT a strong requirement for the use case and standardizing on an IaC tool is advisable to reduce operational complexity and cognitive load from operators.
 
 ---
 
@@ -95,7 +95,7 @@ Verdict - Parity, multi-provider support is NOT a strong requirement for the use
 |---|---|---|
 | - CLI-centric workflow<br>- Steep learning curve for team operations<br>- No visualization of infrastructure relationships<br>- State file management is manual and error-prone | - Professional web dashboard<br>- Clear run history and approvals interface<br>- Cost estimation view<br>- Run status visibility for teams<br>- Workspace organization can feel rigid | - **Intuitive web UI** with stack visualizations<br>- **Dependency graphs** show infrastructure relationships<br>- Easy approval workflows with diff preview<br>- Cost estimation with historical trends<br>- Dashboard customizable per team role<br>- **Lower cognitive load** for new team members |
 
-**In-Going view:** There is not UI support for native terraform, teams lean in on the UI provided from their CI/CD tooling, but it wont provide a view on the terraform specifics like state, drift and policy outcomes. Managed Platforms have a clear advantage here.
+**In-Going view:** There is no UI support for native terraform, teams lean in on the UI provided from their CI/CD tooling, but it wont provide a view on the terraform specifics like state, drift and policy outcomes. Managed Platforms have a clear advantage here.
 
 Verdict - Managed Platforms. If the cost of the subscription is palatable and the organization values a more intuitive experience for less experieced operators. 
 
@@ -126,8 +126,8 @@ For both Managed platforms offering we do have an option to self host but pricin
 
 HCP Terraform pricing is based on **Resources Under Management (RUM)**, with no separate user-seat licence assumed. HashiCorp publishes Premium pricing at **$0.99 per resource/month**. Spacelift’s official Enterprise SaaS pricing is custom/quote-based; a third-party Vendr benchmark indicates Enterprise pricing often starts at **$5,000+/month**, which should be treated as a market benchmark rather than a confirmed vendor quote.
 
-**In-Going view:** Spacelift is more expensive in this estimate but that could change if the Resources under management exceeds this estimate. Additionally, the cost of the subscription should be weighed against the operational overhead and engineering effort.
-
+**In-Going view:** Spacelift seems more expensive in this estimate but that could change if the Resources under management exceeds this estimate and the client might benefit in a flat monthly price. Additionally, the cost of the subscription should be weighed against the operational overhead and engineering effort.
+    
 **Verdict - Native Terraform if implementation and run teams are technically mature , otherwise the managed platforms can be considered if the subscription cost is palatable and the organization values a more intuitive experience for less experienced operators.**
 
 ---
