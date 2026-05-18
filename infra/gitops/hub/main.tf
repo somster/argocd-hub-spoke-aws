@@ -1,5 +1,22 @@
+terraform {
+  required_version = ">= 0.13"
+  # Enables remote state
+  backend "s3" {
+    bucket = "owd101vpbtfstate"
+    key    = "layer1-aws/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 provider "aws" {
   region = local.region
+  assume_role {
+    role_arn = "arn:aws:iam::863518459040:role/system/VPB_Terraform_Access"
+  }
+  # we use default_tags even though it triggers https://github.com/hashicorp/terraform-provider-aws/issues/18311
+  default_tags {
+    tags = local.tags
+  }
 }
 
 data "aws_caller_identity" "current" {}
@@ -16,14 +33,12 @@ provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, "--region", local.region]
-    }
+    token = data.aws_eks_cluster_auth.cluster_auth.token
   }
+}
+
+data "aws_eks_cluster_auth" "cluster_auth" {
+  name = module.eks.cluster_name
 }
 
 provider "kubernetes" {
@@ -45,8 +60,7 @@ locals {
 
   cluster_version = var.kubernetes_version
 
-  vpc_cidr = var.vpc_cidr
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 
   gitops_addons_url      = "${var.gitops_addons_org}/${var.gitops_addons_repo}"
   gitops_addons_basepath = var.gitops_addons_basepath
@@ -114,7 +128,7 @@ locals {
       aws_cluster_name = module.eks.cluster_name
       aws_region       = local.region
       aws_account_id   = data.aws_caller_identity.current.account_id
-      aws_vpc_id       = module.vpc.vpc_id
+      aws_vpc_id       = data.aws_vpc.main_vpc.id
     },
     {
       argocd_namespace = local.argocd_namespace
@@ -148,6 +162,7 @@ module "gitops_bridge_bootstrap" {
 
   argocd = {
     namespace = local.argocd_namespace
+    timeout   = 900
   }
 }
 
@@ -248,8 +263,8 @@ module "eks" {
   cluster_endpoint_public_access = true
 
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = data.aws_vpc.main_vpc.id
+  subnet_ids = concat([for j in data.aws_subnet.core : j.id], [for k in data.aws_subnet.dmz : k.id])
 
   authentication_mode = local.authentication_mode
 
@@ -287,30 +302,4 @@ module "eks" {
   tags = local.tags
 }
 
-################################################################################
-# Supporting Resources
-################################################################################
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
 
-  name = local.name
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
-
-  public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
-  }
-
-  tags = local.tags
-}
