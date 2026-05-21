@@ -10,7 +10,7 @@ Before using the ArgoCD CLI, ensure you're running the latest stable version:
 
 ```bash
 # Check your current CLI version
-argocd version
+argo-deployments version
 
 # Get latest stable ArgoCD version
 LATEST_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases | \
@@ -52,19 +52,19 @@ LATEST_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases 
 ### argocd login
 
 ```bash
-argocd login SERVER [flags]
+argo-deployments login SERVER [flags]
 
 # Interactive login
-argocd login argocd.example.com
+argo-deployments login argo-deployments.example.com
 
 # Non-interactive
-argocd login argocd.example.com --username admin --password secret
+argo-deployments login argo-deployments.example.com --username admin --password secret
 
 # With SSO
-argocd login argocd.example.com --sso
+argo-deployments login argo-deployments.example.com --sso
 
 # Skip TLS
-argocd login argocd.example.com --insecure
+argo-deployments login argo-deployments.example.com --insecure
 
 Flags:
   --grpc-web               Use gRPC-web
@@ -81,29 +81,29 @@ Flags:
 ### argocd logout
 
 ```bash
-argocd logout SERVER [flags]
+argo-deployments logout SERVER [flags]
 ```
 
 ### argocd relogin
 
 ```bash
-argocd relogin [flags]
+argo-deployments relogin [flags]
 
 # Refresh SSO session
-argocd relogin --sso
+argo-deployments relogin --sso
 ```
 
 ### argocd context
 
 ```bash
 # List contexts
-argocd context
+argo-deployments context
 
 # Switch context
-argocd context myserver
+argo-deployments context myserver
 
 # Delete context
-argocd context myserver --delete
+argo-deployments context myserver --delete
 ```
 
 ## Application Commands
@@ -111,17 +111,17 @@ argocd context myserver --delete
 ### argocd app create
 
 ```bash
-argocd app create NAME [flags]
+argo-deployments app create NAME [flags]
 
 # From Git repo
-argocd app create myapp \
+argo-deployments app create myapp \
   --repo https://github.com/org/repo.git \
   --path manifests \
   --dest-server https://kubernetes.default.svc \
   --dest-namespace default
 
 # With Helm
-argocd app create myapp \
+argo-deployments app create myapp \
   --repo https://charts.example.com \
   --helm-chart mychart \
   --revision 1.0.0 \
@@ -131,7 +131,7 @@ argocd app create myapp \
   --values-literal-file values.yaml
 
 # With Kustomize
-argocd app create myapp \
+argo-deployments app create myapp \
   --repo https://github.com/org/repo.git \
   --path kustomize/overlays/prod \
   --dest-server https://kubernetes.default.svc \
@@ -139,7 +139,7 @@ argocd app create myapp \
   --kustomize-image gcr.io/image:v1.0.0
 
 # With auto-sync
-argocd app create myapp \
+argo-deployments app create myapp \
   --repo https://github.com/org/repo.git \
   --path manifests \
   --dest-server https://kubernetes.default.svc \
@@ -213,25 +213,25 @@ Flags:
 ### argocd app get
 
 ```bash
-argocd app get APPNAME [flags]
+argo-deployments app get APPNAME [flags]
 
 # Get app details
-argocd app get myapp
+argo-deployments app get myapp
 
 # JSON output
-argocd app get myapp -o json
+argo-deployments app get myapp -o json
 
 # Wide output (shows all resources)
-argocd app get myapp -o wide
+argo-deployments app get myapp -o wide
 
 # YAML output
-argocd app get myapp -o yaml
+argo-deployments app get myapp -o yaml
 
 # Show operation info
-argocd app get myapp --show-operation
+argo-deployments app get myapp --show-operation
 
 # Show params
-argocd app get myapp --show-params
+argo-deployments app get myapp --show-params
 
 Flags:
   --hard-refresh         Force refresh from source
@@ -244,22 +244,22 @@ Flags:
 ### argocd app list
 
 ```bash
-argocd app list [flags]
+argo-deployments app list [flags]
 
 # List all apps
-argocd app list
+argo-deployments app list
 
 # Filter by project
-argocd app list -p myproject
+argo-deployments app list -p myproject
 
 # Filter by label
-argocd app list -l app=myapp
+argo-deployments app list -l app=myapp
 
 # JSON output
-argocd app list -o json
+argo-deployments app list -o json
 
 # Filter by cluster
-argocd app list --cluster production
+argo-deployments app list --cluster production
 
 Flags:
   --app-namespace string    App namespace
@@ -273,35 +273,35 @@ Flags:
 ### argocd app sync
 
 ```bash
-argocd app sync APPNAME [flags]
+argo-deployments app sync APPNAME [flags]
 
 # Basic sync
-argocd app sync myapp
+argo-deployments app sync myapp
 
 # Sync with prune
-argocd app sync myapp --prune
+argo-deployments app sync myapp --prune
 
 # Force sync (recreate resources)
-argocd app sync myapp --force
+argo-deployments app sync myapp --force
 
 # Dry run
-argocd app sync myapp --dry-run
+argo-deployments app sync myapp --dry-run
 
 # Sync specific revision
-argocd app sync myapp --revision v1.0.0
+argo-deployments app sync myapp --revision v1.0.0
 
 # Sync specific resources
-argocd app sync myapp --resource apps:Deployment:nginx
-argocd app sync myapp --resource :Service:nginx --resource apps:Deployment:nginx
+argo-deployments app sync myapp --resource apps:Deployment:nginx
+argo-deployments app sync myapp --resource :Service:nginx --resource apps:Deployment:nginx
 
 # Async sync (don't wait)
-argocd app sync myapp --async
+argo-deployments app sync myapp --async
 
 # Sync with retry
-argocd app sync myapp --retry-limit 5 --retry-backoff-duration 5s
+argo-deployments app sync myapp --retry-limit 5 --retry-backoff-duration 5s
 
 # Preview sync diff
-argocd app sync myapp --preview-changes
+argo-deployments app sync myapp --preview-changes
 
 Flags:
   --apply-out-of-sync-only     Only sync out-of-sync resources
@@ -330,25 +330,25 @@ Flags:
 ### argocd app wait
 
 ```bash
-argocd app wait APPNAME [flags]
+argo-deployments app wait APPNAME [flags]
 
 # Wait for sync and health
-argocd app wait myapp
+argo-deployments app wait myapp
 
 # Wait for health only
-argocd app wait myapp --health
+argo-deployments app wait myapp --health
 
 # Wait for sync only
-argocd app wait myapp --sync
+argo-deployments app wait myapp --sync
 
 # Wait for operation
-argocd app wait myapp --operation
+argo-deployments app wait myapp --operation
 
 # With timeout
-argocd app wait myapp --health --timeout 300
+argo-deployments app wait myapp --health --timeout 300
 
 # Wait for suspended
-argocd app wait myapp --suspended
+argo-deployments app wait myapp --suspended
 
 Flags:
   --degraded           Wait for degraded
@@ -363,19 +363,19 @@ Flags:
 ### argocd app delete
 
 ```bash
-argocd app delete APPNAME [flags]
+argo-deployments app delete APPNAME [flags]
 
 # Delete app and resources
-argocd app delete myapp
+argo-deployments app delete myapp
 
 # Delete without confirmation
-argocd app delete myapp -y
+argo-deployments app delete myapp -y
 
 # Keep resources (orphan)
-argocd app delete myapp --cascade=false
+argo-deployments app delete myapp --cascade=false
 
 # Force delete
-argocd app delete myapp --cascade --propagation-policy foreground
+argo-deployments app delete myapp --cascade --propagation-policy foreground
 
 Flags:
   --cascade                Delete resources (default true)
@@ -386,13 +386,13 @@ Flags:
 ### argocd app history
 
 ```bash
-argocd app history APPNAME [flags]
+argo-deployments app history APPNAME [flags]
 
 # Show deployment history
-argocd app history myapp
+argo-deployments app history myapp
 
 # JSON output
-argocd app history myapp -o json
+argo-deployments app history myapp -o json
 
 Flags:
   -o, --output string   Output format (wide, id, json)
@@ -401,16 +401,16 @@ Flags:
 ### argocd app rollback
 
 ```bash
-argocd app rollback APPNAME ID [flags]
+argo-deployments app rollback APPNAME ID [flags]
 
 # Rollback to history ID
-argocd app rollback myapp 2
+argo-deployments app rollback myapp 2
 
 # Dry run
-argocd app rollback myapp 2 --dry-run
+argo-deployments app rollback myapp 2 --dry-run
 
 # Prune on rollback
-argocd app rollback myapp 2 --prune
+argo-deployments app rollback myapp 2 --prune
 
 Flags:
   --dry-run   Preview without applying
@@ -421,19 +421,19 @@ Flags:
 ### argocd app diff
 
 ```bash
-argocd app diff APPNAME [flags]
+argo-deployments app diff APPNAME [flags]
 
 # Show diff
-argocd app diff myapp
+argo-deployments app diff myapp
 
 # Diff against revision
-argocd app diff myapp --revision v1.0.0
+argo-deployments app diff myapp --revision v1.0.0
 
 # Local diff
-argocd app diff myapp --local ./manifests
+argo-deployments app diff myapp --local ./manifests
 
 # Quiet (exit code only)
-argocd app diff myapp --exit-code
+argo-deployments app diff myapp --exit-code
 
 Flags:
   --exit-code           Use exit code for result
@@ -448,29 +448,29 @@ Flags:
 ### argocd app logs
 
 ```bash
-argocd app logs APPNAME [flags]
+argo-deployments app logs APPNAME [flags]
 
 # Get logs
-argocd app logs myapp
+argo-deployments app logs myapp
 
 # Follow logs
-argocd app logs myapp -f
+argo-deployments app logs myapp -f
 
 # Specific container
-argocd app logs myapp --container nginx
+argo-deployments app logs myapp --container nginx
 
 # Specific pod
-argocd app logs myapp --name nginx-xxx
+argo-deployments app logs myapp --name nginx-xxx
 
 # Filter by group/kind
-argocd app logs myapp --group apps --kind Deployment
+argo-deployments app logs myapp --group apps --kind Deployment
 
 # Tail lines
-argocd app logs myapp --tail 100
+argo-deployments app logs myapp --tail 100
 
 # Since time
-argocd app logs myapp --since-time 2023-01-01T00:00:00Z
-argocd app logs myapp --since 1h
+argo-deployments app logs myapp --since-time 2023-01-01T00:00:00Z
+argo-deployments app logs myapp --since 1h
 
 Flags:
   --container string    Container name
@@ -489,19 +489,19 @@ Flags:
 ### argocd app set
 
 ```bash
-argocd app set APPNAME [flags]
+argo-deployments app set APPNAME [flags]
 
 # Change target revision
-argocd app set myapp --revision v1.0.0
+argo-deployments app set myapp --revision v1.0.0
 
 # Change sync policy
-argocd app set myapp --sync-policy automated
+argo-deployments app set myapp --sync-policy automated
 
 # Set Helm values
-argocd app set myapp --helm-set image.tag=v2.0.0
+argo-deployments app set myapp --helm-set image.tag=v2.0.0
 
 # Add sync option
-argocd app set myapp --sync-option Prune=true
+argo-deployments app set myapp --sync-option Prune=true
 
 Flags:
   # Same as app create, allows updating any setting
@@ -510,13 +510,13 @@ Flags:
 ### argocd app unset
 
 ```bash
-argocd app unset APPNAME [flags]
+argo-deployments app unset APPNAME [flags]
 
 # Remove Helm parameter
-argocd app unset myapp --parameter image.tag
+argo-deployments app unset myapp --parameter image.tag
 
 # Remove values file
-argocd app unset myapp --values values-override.yaml
+argo-deployments app unset myapp --values values-override.yaml
 
 Flags:
   --ignore-missing-value-files
@@ -536,10 +536,10 @@ Flags:
 ### argocd app resources
 
 ```bash
-argocd app resources APPNAME [flags]
+argo-deployments app resources APPNAME [flags]
 
 # List resources
-argocd app resources myapp
+argo-deployments app resources myapp
 
 Flags:
   --orphaned            Show orphaned resources only
@@ -549,16 +549,16 @@ Flags:
 ### argocd app manifests
 
 ```bash
-argocd app manifests APPNAME [flags]
+argo-deployments app manifests APPNAME [flags]
 
 # Get live manifests
-argocd app manifests myapp
+argo-deployments app manifests myapp
 
 # Get source manifests
-argocd app manifests myapp --source live
+argo-deployments app manifests myapp --source live
 
 # Get specific revision
-argocd app manifests myapp --revision v1.0.0
+argo-deployments app manifests myapp --revision v1.0.0
 
 Flags:
   --local string        Local path
@@ -570,13 +570,13 @@ Flags:
 ### argocd app patch
 
 ```bash
-argocd app patch APPNAME [flags]
+argo-deployments app patch APPNAME [flags]
 
 # Patch application
-argocd app patch myapp --patch '{"spec":{"source":{"targetRevision":"v1.0.0"}}}'
+argo-deployments app patch myapp --patch '{"spec":{"source":{"targetRevision":"v1.0.0"}}}'
 
 # Patch from file
-argocd app patch myapp --patch-file patch.json
+argo-deployments app patch myapp --patch-file patch.json
 
 Flags:
   --patch string        JSON/YAML patch
@@ -587,23 +587,23 @@ Flags:
 ### argocd app terminate-op
 
 ```bash
-argocd app terminate-op APPNAME [flags]
+argo-deployments app terminate-op APPNAME [flags]
 
 # Terminate running operation
-argocd app terminate-op myapp
+argo-deployments app terminate-op myapp
 ```
 
 ### argocd app actions
 
 ```bash
 # List available actions
-argocd app actions list myapp --kind Deployment
+argo-deployments app actions list myapp --kind Deployment
 
 # Run action
-argocd app actions run myapp restart --kind Deployment --resource-name nginx --namespace default
+argo-deployments app actions run myapp restart --kind Deployment --resource-name nginx --namespace default
 
 # Disable action
-argocd app actions run myapp disable --kind Rollout --resource-name canary
+argo-deployments app actions run myapp disable --kind Rollout --resource-name canary
 ```
 
 ## ApplicationSet Commands
@@ -611,13 +611,13 @@ argocd app actions run myapp disable --kind Rollout --resource-name canary
 ### argocd appset create
 
 ```bash
-argocd appset create FILE [flags]
+argo-deployments appset create FILE [flags]
 
 # Create from file
-argocd appset create appset.yaml
+argo-deployments appset create appset.yaml
 
 # Upsert
-argocd appset create appset.yaml --upsert
+argo-deployments appset create appset.yaml --upsert
 
 Flags:
   --upsert   Update if exists
@@ -626,13 +626,13 @@ Flags:
 ### argocd appset get
 
 ```bash
-argocd appset get NAME [flags]
+argo-deployments appset get NAME [flags]
 
 # Get details
-argocd appset get myappset
+argo-deployments appset get myappset
 
 # YAML output
-argocd appset get myappset -o yaml
+argo-deployments appset get myappset -o yaml
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -641,13 +641,13 @@ Flags:
 ### argocd appset list
 
 ```bash
-argocd appset list [flags]
+argo-deployments appset list [flags]
 
 # List all
-argocd appset list
+argo-deployments appset list
 
 # Filter by project
-argocd appset list -p myproject
+argo-deployments appset list -p myproject
 
 Flags:
   -o, --output string   Output format (wide, json, yaml)
@@ -658,13 +658,13 @@ Flags:
 ### argocd appset delete
 
 ```bash
-argocd appset delete NAME [flags]
+argo-deployments appset delete NAME [flags]
 
 # Delete
-argocd appset delete myappset
+argo-deployments appset delete myappset
 
 # Without confirmation
-argocd appset delete myappset -y
+argo-deployments appset delete myappset -y
 
 Flags:
   -y, --yes   Skip confirmation
@@ -675,10 +675,10 @@ Flags:
 ### argocd proj create
 
 ```bash
-argocd proj create NAME [flags]
+argo-deployments proj create NAME [flags]
 
 # Create project
-argocd proj create myproject \
+argo-deployments proj create myproject \
   -d https://kubernetes.default.svc,default \
   -s https://github.com/org/*
 
@@ -699,13 +699,13 @@ Flags:
 ### argocd proj list
 
 ```bash
-argocd proj list [flags]
+argo-deployments proj list [flags]
 
 # List projects
-argocd proj list
+argo-deployments proj list
 
 # JSON output
-argocd proj list -o json
+argo-deployments proj list -o json
 
 Flags:
   -o, --output string   Output format (wide, json, yaml, name)
@@ -714,10 +714,10 @@ Flags:
 ### argocd proj get
 
 ```bash
-argocd proj get NAME [flags]
+argo-deployments proj get NAME [flags]
 
 # Get project
-argocd proj get myproject
+argo-deployments proj get myproject
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -727,77 +727,77 @@ Flags:
 
 ```bash
 # Open in editor
-argocd proj edit myproject
+argo-deployments proj edit myproject
 ```
 
 ### argocd proj delete
 
 ```bash
-argocd proj delete NAME [flags]
+argo-deployments proj delete NAME [flags]
 
 # Delete project
-argocd proj delete myproject
+argo-deployments proj delete myproject
 ```
 
 ### argocd proj add-destination
 
 ```bash
-argocd proj add-destination PROJECT SERVER NAMESPACE [flags]
+argo-deployments proj add-destination PROJECT SERVER NAMESPACE [flags]
 
 # Add destination
-argocd proj add-destination myproject https://kubernetes.default.svc 'team-*'
+argo-deployments proj add-destination myproject https://kubernetes.default.svc 'team-*'
 
 # Add by cluster name
-argocd proj add-destination myproject production default --name
+argo-deployments proj add-destination myproject production default --name
 ```
 
 ### argocd proj remove-destination
 
 ```bash
-argocd proj remove-destination PROJECT SERVER NAMESPACE
+argo-deployments proj remove-destination PROJECT SERVER NAMESPACE
 ```
 
 ### argocd proj add-source
 
 ```bash
-argocd proj add-source PROJECT URL
+argo-deployments proj add-source PROJECT URL
 
 # Add source repo
-argocd proj add-source myproject 'https://github.com/org/*'
+argo-deployments proj add-source myproject 'https://github.com/org/*'
 ```
 
 ### argocd proj remove-source
 
 ```bash
-argocd proj remove-source PROJECT URL
+argo-deployments proj remove-source PROJECT URL
 ```
 
 ### argocd proj role create
 
 ```bash
-argocd proj role create PROJECT ROLE
+argo-deployments proj role create PROJECT ROLE
 
 # Create role
-argocd proj role create myproject developer
+argo-deployments proj role create myproject developer
 ```
 
 ### argocd proj role delete
 
 ```bash
-argocd proj role delete PROJECT ROLE
+argo-deployments proj role delete PROJECT ROLE
 ```
 
 ### argocd proj role add-policy
 
 ```bash
-argocd proj role add-policy PROJECT ROLE [flags]
+argo-deployments proj role add-policy PROJECT ROLE [flags]
 
 # Add policy
-argocd proj role add-policy myproject developer \
+argo-deployments proj role add-policy myproject developer \
   -a sync -p allow -o '*'
 
 # Add get permission
-argocd proj role add-policy myproject developer \
+argo-deployments proj role add-policy myproject developer \
   -a get -p allow -o '*'
 
 Flags:
@@ -809,31 +809,31 @@ Flags:
 ### argocd proj role remove-policy
 
 ```bash
-argocd proj role remove-policy PROJECT ROLE [flags]
+argo-deployments proj role remove-policy PROJECT ROLE [flags]
 ```
 
 ### argocd proj role add-group
 
 ```bash
-argocd proj role add-group PROJECT ROLE GROUP
+argo-deployments proj role add-group PROJECT ROLE GROUP
 
 # Add SSO group
-argocd proj role add-group myproject developer team-developers
+argo-deployments proj role add-group myproject developer team-developers
 ```
 
 ### argocd proj role remove-group
 
 ```bash
-argocd proj role remove-group PROJECT ROLE GROUP
+argo-deployments proj role remove-group PROJECT ROLE GROUP
 ```
 
 ### argocd proj role create-token
 
 ```bash
-argocd proj role create-token PROJECT ROLE [flags]
+argo-deployments proj role create-token PROJECT ROLE [flags]
 
 # Create token
-argocd proj role create-token myproject developer --expires-in 24h
+argo-deployments proj role create-token myproject developer --expires-in 24h
 
 Flags:
   --expires-in duration   Token expiration
@@ -843,16 +843,16 @@ Flags:
 ### argocd proj role delete-token
 
 ```bash
-argocd proj role delete-token PROJECT ROLE IAT
+argo-deployments proj role delete-token PROJECT ROLE IAT
 ```
 
 ### argocd proj windows add
 
 ```bash
-argocd proj windows add PROJECT [flags]
+argo-deployments proj windows add PROJECT [flags]
 
 # Add sync window
-argocd proj windows add myproject \
+argo-deployments proj windows add myproject \
   --kind allow \
   --schedule "0 22 * * *" \
   --duration 2h \
@@ -872,19 +872,19 @@ Flags:
 ### argocd proj windows delete
 
 ```bash
-argocd proj windows delete PROJECT ID
+argo-deployments proj windows delete PROJECT ID
 ```
 
 ### argocd proj windows list
 
 ```bash
-argocd proj windows list PROJECT
+argo-deployments proj windows list PROJECT
 ```
 
 ### argocd proj windows update
 
 ```bash
-argocd proj windows update PROJECT ID [flags]
+argo-deployments proj windows update PROJECT ID [flags]
 ```
 
 ## Repository Commands
@@ -892,25 +892,25 @@ argocd proj windows update PROJECT ID [flags]
 ### argocd repo add
 
 ```bash
-argocd repo add REPOURL [flags]
+argo-deployments repo add REPOURL [flags]
 
 # HTTPS with token
-argocd repo add https://github.com/org/repo --username git --password $TOKEN
+argo-deployments repo add https://github.com/org/repo --username git --password $TOKEN
 
 # SSH with key
-argocd repo add git@github.com:org/repo.git --ssh-private-key-path ~/.ssh/id_rsa
+argo-deployments repo add git@github.com:org/repo.git --ssh-private-key-path ~/.ssh/id_rsa
 
 # GitHub App
-argocd repo add https://github.com/org/repo \
+argo-deployments repo add https://github.com/org/repo \
   --github-app-id 12345 \
   --github-app-installation-id 67890 \
   --github-app-private-key-path key.pem
 
 # Helm repo
-argocd repo add https://charts.example.com --type helm --name stable
+argo-deployments repo add https://charts.example.com --type helm --name stable
 
 # OCI registry
-argocd repo add registry.example.com --type helm --enable-oci
+argo-deployments repo add registry.example.com --type helm --enable-oci
 
 Flags:
   --enable-lfs               Enable Git LFS
@@ -936,7 +936,7 @@ Flags:
 ### argocd repo list
 
 ```bash
-argocd repo list [flags]
+argo-deployments repo list [flags]
 
 Flags:
   -o, --output string   Output format (url, json, yaml)
@@ -946,37 +946,37 @@ Flags:
 ### argocd repo get
 
 ```bash
-argocd repo get REPOURL [flags]
+argo-deployments repo get REPOURL [flags]
 ```
 
 ### argocd repo rm
 
 ```bash
-argocd repo rm REPOURL [flags]
+argo-deployments repo rm REPOURL [flags]
 ```
 
 ### argocd repocreds add
 
 ```bash
-argocd repocreds add URLPREFIX [flags]
+argo-deployments repocreds add URLPREFIX [flags]
 
 # Add credential template
-argocd repocreds add https://github.com/myorg/ --username git --password $TOKEN
+argo-deployments repocreds add https://github.com/myorg/ --username git --password $TOKEN
 
 # SSH credentials
-argocd repocreds add git@github.com:myorg/ --ssh-private-key-path ~/.ssh/id_rsa
+argo-deployments repocreds add git@github.com:myorg/ --ssh-private-key-path ~/.ssh/id_rsa
 ```
 
 ### argocd repocreds list
 
 ```bash
-argocd repocreds list
+argo-deployments repocreds list
 ```
 
 ### argocd repocreds rm
 
 ```bash
-argocd repocreds rm URLPREFIX
+argo-deployments repocreds rm URLPREFIX
 ```
 
 ## Cluster Commands
@@ -984,22 +984,22 @@ argocd repocreds rm URLPREFIX
 ### argocd cluster add
 
 ```bash
-argocd cluster add CONTEXT [flags]
+argo-deployments cluster add CONTEXT [flags]
 
 # Add from kubeconfig context
-argocd cluster add my-context
+argo-deployments cluster add my-context
 
 # With custom name
-argocd cluster add my-context --name production
+argo-deployments cluster add my-context --name production
 
 # To specific project
-argocd cluster add my-context --project myproject
+argo-deployments cluster add my-context --project myproject
 
 # With namespace restrictions
-argocd cluster add my-context --namespace default --namespace app
+argo-deployments cluster add my-context --namespace default --namespace app
 
 # With labels
-argocd cluster add my-context --label environment=production
+argo-deployments cluster add my-context --label environment=production
 
 Flags:
   --annotation stringArray Annotations
@@ -1020,7 +1020,7 @@ Flags:
 ### argocd cluster list
 
 ```bash
-argocd cluster list [flags]
+argo-deployments cluster list [flags]
 
 Flags:
   -o, --output string   Output format (wide, server, json, yaml)
@@ -1029,7 +1029,7 @@ Flags:
 ### argocd cluster get
 
 ```bash
-argocd cluster get SERVER [flags]
+argo-deployments cluster get SERVER [flags]
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -1038,7 +1038,7 @@ Flags:
 ### argocd cluster rm
 
 ```bash
-argocd cluster rm SERVER [flags]
+argo-deployments cluster rm SERVER [flags]
 
 Flags:
   -y, --yes   Skip confirmation
@@ -1047,10 +1047,10 @@ Flags:
 ### argocd cluster rotate-auth
 
 ```bash
-argocd cluster rotate-auth SERVER [flags]
+argo-deployments cluster rotate-auth SERVER [flags]
 
 # Rotate credentials
-argocd cluster rotate-auth https://production.example.com
+argo-deployments cluster rotate-auth https://production.example.com
 ```
 
 ## Account Commands
@@ -1058,7 +1058,7 @@ argocd cluster rotate-auth https://production.example.com
 ### argocd account list
 
 ```bash
-argocd account list [flags]
+argo-deployments account list [flags]
 
 Flags:
   -o, --output string   Output format (wide, json)
@@ -1067,13 +1067,13 @@ Flags:
 ### argocd account get
 
 ```bash
-argocd account get [USERNAME] [flags]
+argo-deployments account get [USERNAME] [flags]
 
 # Get current user
-argocd account get
+argo-deployments account get
 
 # Get specific user
-argocd account get admin
+argo-deployments account get admin
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -1082,19 +1082,19 @@ Flags:
 ### argocd account generate-token
 
 ```bash
-argocd account generate-token [flags]
+argo-deployments account generate-token [flags]
 
 # Generate for current account
-argocd account generate-token
+argo-deployments account generate-token
 
 # For specific account
-argocd account generate-token --account cibot
+argo-deployments account generate-token --account cibot
 
 # With expiration
-argocd account generate-token --account cibot --expires-in 7d
+argo-deployments account generate-token --account cibot --expires-in 7d
 
 # With ID
-argocd account generate-token --account cibot --id deploy-token
+argo-deployments account generate-token --account cibot --id deploy-token
 
 Flags:
   --account string      Account name
@@ -1105,13 +1105,13 @@ Flags:
 ### argocd account update-password
 
 ```bash
-argocd account update-password [flags]
+argo-deployments account update-password [flags]
 
 # Update current password
-argocd account update-password
+argo-deployments account update-password
 
 # Update specific account
-argocd account update-password --account admin
+argo-deployments account update-password --account admin
 
 Flags:
   --account string      Account name
@@ -1122,22 +1122,22 @@ Flags:
 ### argocd account can-i
 
 ```bash
-argocd account can-i ACTION RESOURCE SUBRESOURCE [flags]
+argo-deployments account can-i ACTION RESOURCE SUBRESOURCE [flags]
 
 # Check sync permission
-argocd account can-i sync applications '*'
+argo-deployments account can-i sync applications '*'
 
 # Check specific app
-argocd account can-i get applications 'myproject/myapp'
+argo-deployments account can-i get applications 'myproject/myapp'
 
 # Check cluster resource
-argocd account can-i update clusters '*'
+argo-deployments account can-i update clusters '*'
 ```
 
 ### argocd account get-user-info
 
 ```bash
-argocd account get-user-info [flags]
+argo-deployments account get-user-info [flags]
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -1146,10 +1146,10 @@ Flags:
 ### argocd account bcrypt
 
 ```bash
-argocd account bcrypt --password PASSWORD
+argo-deployments account bcrypt --password PASSWORD
 
 # Generate bcrypt hash
-argocd account bcrypt --password mysecret
+argo-deployments account bcrypt --password mysecret
 ```
 
 ## Certificate Commands
@@ -1158,23 +1158,23 @@ argocd account bcrypt --password mysecret
 
 ```bash
 # Add SSH known hosts
-ssh-keyscan github.com | argocd cert add-ssh --batch
+ssh-keyscan github.com | argo-deployments cert add-ssh --batch
 
 # Add single host
-argocd cert add-ssh --from /path/to/known_hosts
+argo-deployments cert add-ssh --from /path/to/known_hosts
 ```
 
 ### argocd cert add-tls
 
 ```bash
 # Add TLS cert
-argocd cert add-tls cd.example.com --from /path/to/cert.pem
+argo-deployments cert add-tls cd.example.com --from /path/to/cert.pem
 ```
 
 ### argocd cert list
 
 ```bash
-argocd cert list [flags]
+argo-deployments cert list [flags]
 
 Flags:
   --cert-type string    Type (ssh, https)
@@ -1185,7 +1185,7 @@ Flags:
 ### argocd cert rm
 
 ```bash
-argocd cert rm HOSTNAME [flags]
+argo-deployments cert rm HOSTNAME [flags]
 
 Flags:
   --cert-type string    Type (ssh, https)
@@ -1197,13 +1197,13 @@ Flags:
 ### argocd gpg add
 
 ```bash
-argocd gpg add --from /path/to/key.asc
+argo-deployments gpg add --from /path/to/key.asc
 ```
 
 ### argocd gpg list
 
 ```bash
-argocd gpg list [flags]
+argo-deployments gpg list [flags]
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -1212,7 +1212,7 @@ Flags:
 ### argocd gpg get
 
 ```bash
-argocd gpg get KEYID [flags]
+argo-deployments gpg get KEYID [flags]
 
 Flags:
   -o, --output string   Output format (json, yaml)
@@ -1221,7 +1221,7 @@ Flags:
 ### argocd gpg rm
 
 ```bash
-argocd gpg rm KEYID
+argo-deployments gpg rm KEYID
 ```
 
 ## Admin Commands
@@ -1230,59 +1230,59 @@ argocd gpg rm KEYID
 
 ```bash
 # Get initial admin password
-argocd admin initial-password -n argocd
+argo-deployments admin initial-password -n argo-deployments
 ```
 
 ### argocd admin settings
 
 ```bash
 # Validate RBAC
-argocd admin settings rbac validate --policy-file policy.csv
+argo-deployments admin settings rbac validate --policy-file policy.csv
 
 # Test RBAC
-argocd admin settings rbac can role:developer get applications '*/*'
+argo-deployments admin settings rbac can role:developer get applications '*/*'
 ```
 
 ### argocd admin cluster
 
 ```bash
 # Generate cluster config
-argocd admin cluster generate-spec CONTEXT
+argo-deployments admin cluster generate-spec CONTEXT
 ```
 
 ### argocd admin export
 
 ```bash
 # Export all resources
-argocd admin export > backup.yaml
+argo-deployments admin export > backup.yaml
 ```
 
 ### argocd admin import
 
 ```bash
 # Import resources
-argocd admin import < backup.yaml
+argo-deployments admin import < backup.yaml
 ```
 
 ### argocd admin notifications
 
 ```bash
 # Test notification template
-argocd admin notifications template get app-deployed
+argo-deployments admin notifications template get app-deployed
 
 # List triggers
-argocd admin notifications trigger list
+argo-deployments admin notifications trigger list
 ```
 
 ## Version Command
 
 ```bash
 # Show client version
-argocd version
+argo-deployments version
 
 # Show client only
-argocd version --client
+argo-deployments version --client
 
 # JSON output
-argocd version -o json
+argo-deployments version -o json
 ```

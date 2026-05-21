@@ -2,19 +2,19 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: platform-appset
-  namespace: argocd
+  namespace: argo-deployments
 spec:
   generators:
     - list:
         elements:
           - environment: dev
-            path: argocd/apps/dev
+            path: argo-deployments/apps/dev
             namespace: guestbook-dev
           - environment: test
-            path: argocd/apps/test
+            path: argo-deployments/apps/test
             namespace: guestbook-test
           - environment: prod
-            path: argocd/apps/prod
+            path: argo-deployments/apps/prod
             namespace: guestbook-prod
   template:
     metadata:

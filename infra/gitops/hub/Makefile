@@ -6,18 +6,28 @@
 #   AWS_ACCESS_KEY_ID     → aws_access_key_id
 #   AWS_SECRET_ACCESS_KEY → aws_secret_access_key
 
-TF_ENV = AWS_CONFIG_FILE=$(PWD)/local-aws-config.ini AWS_PROFILE=terraform_vpb
+TFVARS_FILE ?= terraform.tfvars
+VARFILE_FLAG := $(if $(wildcard $(PWD)/$(TFVARS_FILE)),-var-file=$(PWD)/$(TFVARS_FILE),)
 
-.PHONY: init plan apply destroy
+.PHONY: init plan apply destroy bootstrap
 
 init:
-	$(TF_ENV) terraform init
+	 terraform init
 
 plan:
-	$(TF_ENV) terraform plan
+	 terraform plan $(VARFILE_FLAG)
 
 apply:
-	$(TF_ENV) terraform apply
+	 terraform apply $(VARFILE_FLAG) --auto-approve
 
-destroy:
-	$(TF_ENV) terraform destroy
+bootstrap:
+	 aws eks update-kubeconfig \
+		--name hub-control-plane \
+		--region us-west-2 \
+		--assume-role-arn arn:aws:iam::863518459040:role/system/VPB_Terraform_Access \
+		--role-arn arn:aws:iam::863518459040:role/system/VPB_Terraform_Access \
+		--alias hub
+	 kubectl --context hub apply -f $(PWD)/bootstrap/addons.yaml
+
+destroy:	 bash ./destroy.sh
+	 terraform destroy $(VARFILE_FLAG) --auto-approve

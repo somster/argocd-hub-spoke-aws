@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: platform
+  name: edge-project
   namespace: argocd
 spec:
-  description: Platform-managed project for environment workloads
+  description: Project for edge live sync workloads
   sourceRepos:
-    - https://github.com/REPLACE_ME_ORG/REPLACE_ME_REPO.git
+    - "*"
   destinations:
     - namespace: '*'
       server: https://kubernetes.default.svc
@@ -16,3 +16,4 @@ spec:
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
+

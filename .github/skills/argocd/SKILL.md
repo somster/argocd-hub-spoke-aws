@@ -1,6 +1,6 @@
 ---
-name: argocd
-description: Complete ArgoCD API and CLI skill for GitOps automation. Use when working with ArgoCD for: (1) Managing Applications - create, sync, delete, rollback, get status, (2) ApplicationSets - templated multi-cluster deployments, (3) Projects - RBAC, source/destination restrictions, sync windows, (4) Repositories - add/remove Git repos, Helm charts, OCI registries, (5) Clusters - register, rotate credentials, manage multi-cluster, (6) Accounts - generate tokens, manage users, check permissions, (7) Any ArgoCD REST API calls or argocd CLI commands. Supports both REST API (curl/HTTP) and CLI wrapper approaches with bearer token authentication.
+name: argo-deployments
+description: Complete ArgoCD API and CLI skill for GitOps automation. Use when working with ArgoCD for: (1) Managing Applications - create, sync, delete, rollback, get status, (2) ApplicationSets - templated multi-cluster argo-deployments, (3) Projects - RBAC, source/destination restrictions, sync windows, (4) Repositories - add/remove Git repos, Helm charts, OCI registries, (5) Clusters - register, rotate credentials, manage multi-cluster, (6) Accounts - generate tokens, manage users, check permissions, (7) Any ArgoCD REST API calls or argo-deployments CLI commands. Supports both REST API (curl/HTTP) and CLI wrapper approaches with bearer token authentication.
 ---
 
 # ArgoCD Skill
@@ -22,7 +22,7 @@ Before generating any ArgoCD configuration or commands:
 
 2. **Verify installed version matches or exceeds latest stable**:
    ```bash
-   argocd version --short
+   argo-deployments version --short
    # Should be at least the latest stable version
    ```
 
@@ -55,11 +55,11 @@ Generate and use bearer tokens for all operations:
 
 ```bash
 # Generate token (requires existing login)
-argocd login $ARGOCD_SERVER --username admin --password $ARGOCD_PASSWORD
-ARGOCD_TOKEN=$(argocd account generate-token)
+argo-deployments login $ARGOCD_SERVER --username admin --password $ARGOCD_PASSWORD
+ARGOCD_TOKEN=$(argo-deployments account generate-token)
 
 # Or generate for service account
-ARGOCD_TOKEN=$(argocd account generate-token --account cibot --expires-in 7d)
+ARGOCD_TOKEN=$(argo-deployments account generate-token --account cibot --expires-in 7d)
 
 # Export for subsequent commands
 export ARGOCD_SERVER="argocd.example.com"
@@ -92,10 +92,10 @@ Use the helper script at `scripts/argocd-api.sh` for common operations.
 
 ```bash
 # List all applications
-argocd app list -o json
+argo-deployments app list -o json
 
 # Create application
-argocd app create myapp \
+argo-deployments app create myapp \
   --repo https://github.com/org/repo.git \
   --path manifests \
   --dest-server https://kubernetes.default.svc \
@@ -105,130 +105,130 @@ argocd app create myapp \
   --self-heal
 
 # Sync with options
-argocd app sync myapp --prune --force --timeout 300
+argo-deployments app sync myapp --prune --force --timeout 300
 
 # Sync specific resources only
-argocd app sync myapp --resource apps:Deployment:nginx
+argo-deployments app sync myapp --resource apps:Deployment:nginx
 
 # Dry run
-argocd app sync myapp --dry-run
+argo-deployments app sync myapp --dry-run
 
 # Wait for health
-argocd app wait myapp --health --sync --timeout 300
+argo-deployments app wait myapp --health --sync --timeout 300
 
 # Get status
-argocd app get myapp -o json | jq '{health: .status.health.status, sync: .status.sync.status}'
+argo-deployments app get myapp -o json | jq '{health: .status.health.status, sync: .status.sync.status}'
 
 # Rollback
-argocd app history myapp
-argocd app rollback myapp 2
+argo-deployments app history myapp
+argo-deployments app rollback myapp 2
 
 # Delete (cascade deletes resources)
-argocd app delete myapp --cascade -y
+argo-deployments app delete myapp --cascade -y
 
 # Terminate running operation
-argocd app terminate-op myapp
+argo-deployments app terminate-op myapp
 ```
 
 ### ApplicationSets
 
 ```bash
 # Create/update ApplicationSet
-argocd appset create appset.yaml --upsert
+argo-deployments appset create appset.yaml --upsert
 
 # List
-argocd appset list
+argo-deployments appset list
 
 # Get details
-argocd appset get myappset -o yaml
+argo-deployments appset get myappset -o yaml
 
 # Delete
-argocd appset delete myappset -y
+argo-deployments appset delete myappset -y
 ```
 
 ### Projects
 
 ```bash
 # Create project
-argocd proj create myproject -d https://kubernetes.default.svc,default -s https://github.com/org/*
+argo-deployments proj create myproject -d https://kubernetes.default.svc,default -s https://github.com/org/*
 
 # Add destinations/sources
-argocd proj add-destination myproject https://kubernetes.default.svc 'team-*'
-argocd proj add-source myproject 'https://github.com/org/*'
+argo-deployments proj add-destination myproject https://kubernetes.default.svc 'team-*'
+argo-deployments proj add-source myproject 'https://github.com/org/*'
 
 # Manage roles
-argocd proj role create myproject deployer
-argocd proj role add-policy myproject deployer -a sync -p allow -o '*'
-argocd proj role add-group myproject deployer my-sso-group
+argo-deployments proj role create myproject deployer
+argo-deployments proj role add-policy myproject deployer -a sync -p allow -o '*'
+argo-deployments proj role add-group myproject deployer my-sso-group
 
 # Generate role token
-argocd proj role create-token myproject deployer --expires-in 24h
+argo-deployments proj role create-token myproject deployer --expires-in 24h
 
 # Sync windows
-argocd proj windows add myproject --kind allow --schedule "0 22 * * *" --duration 2h
-argocd proj windows list myproject
+argo-deployments proj windows add myproject --kind allow --schedule "0 22 * * *" --duration 2h
+argo-deployments proj windows list myproject
 ```
 
 ### Repositories
 
 ```bash
 # Add HTTPS repo with token
-argocd repo add https://github.com/org/repo --username git --password $GH_TOKEN
+argo-deployments repo add https://github.com/org/repo --username git --password $GH_TOKEN
 
 # Add SSH repo
-argocd repo add git@github.com:org/repo.git --ssh-private-key-path ~/.ssh/id_rsa
+argo-deployments repo add git@github.com:org/repo.git --ssh-private-key-path ~/.ssh/id_rsa
 
 # Add Helm repo
-argocd repo add https://charts.example.com --type helm --name myrepo
+argo-deployments repo add https://charts.example.com --type helm --name myrepo
 
 # Add OCI registry
-argocd repo add registry.example.com --type helm --enable-oci --username user --password pass
+argo-deployments repo add registry.example.com --type helm --enable-oci --username user --password pass
 
 # Credential template (applies to matching repos)
-argocd repocreds add https://github.com/myorg/ --username git --password $TOKEN
+argo-deployments repocreds add https://github.com/myorg/ --username git --password $TOKEN
 
 # List/remove
-argocd repo list
-argocd repo rm https://github.com/org/repo
+argo-deployments repo list
+argo-deployments repo rm https://github.com/org/repo
 ```
 
 ### Clusters
 
 ```bash
 # Add cluster from kubeconfig context
-argocd cluster add my-context --name production
+argo-deployments cluster add my-context --name production
 
 # List clusters
-argocd cluster list
+argo-deployments cluster list
 
 # Get cluster details
-argocd cluster get https://production.example.com
+argo-deployments cluster get https://production.example.com
 
 # Rotate credentials
-argocd cluster rotate-auth production
+argo-deployments cluster rotate-auth production
 
 # Remove cluster
-argocd cluster rm https://production.example.com
+argo-deployments cluster rm https://production.example.com
 ```
 
 ### Accounts
 
 ```bash
 # List accounts
-argocd account list
+argo-deployments account list
 
 # Generate token
-argocd account generate-token --account cibot --expires-in 7d --id deploy-token
+argo-deployments account generate-token --account cibot --expires-in 7d --id deploy-token
 
 # Check permissions
-argocd account can-i sync applications '*'
-argocd account can-i get applications 'myproject/*'
+argo-deployments account can-i sync applications '*'
+argo-deployments account can-i get applications 'myproject/*'
 
 # Update password
-argocd account update-password --account admin
+argo-deployments account update-password --account admin
 
 # Get user info
-argocd account get-user-info
+argo-deployments account get-user-info
 ```
 
 ## REST API Examples
@@ -242,7 +242,7 @@ curl -X POST -H "Authorization: Bearer $ARGOCD_AUTH_TOKEN" \
   -H "Content-Type: application/json" \
   "https://$ARGOCD_SERVER/api/v1/applications" \
   -d '{
-    "metadata": {"name": "myapp", "namespace": "argocd"},
+    "metadata": {"name": "myapp", "namespace": "argo-deployments"},
     "spec": {
       "project": "default",
       "source": {
@@ -292,9 +292,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: myapp
-  namespace: argocd
+  namespace: argo-deployments
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argo-deployments.argoproj.io
 spec:
   project: default
 
@@ -350,7 +350,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: cluster-apps
-  namespace: argocd
+  namespace: argo-deployments
 spec:
   generators:
     # List generator
@@ -451,22 +451,22 @@ metadata:
 
 ```bash
 # Check if app exists before operations
-if argocd app get myapp &>/dev/null; then
-  argocd app sync myapp
+if argo-deployments app get myapp &>/dev/null; then
+  argo-deployments app sync myapp
 else
-  argocd app create myapp ...
+  argo-deployments app create myapp ...
 fi
 
 # Wait with timeout and handle failure
-if ! argocd app wait myapp --health --timeout 300; then
+if ! argo-deployments app wait myapp --health --timeout 300; then
   echo "App failed to become healthy"
-  argocd app get myapp
+  argo-deployments app get myapp
   exit 1
 fi
 
 # Idempotent upsert pattern
-argocd app create myapp --upsert ...
-argocd repo add https://repo --upsert ...
+argo-deployments app create myapp --upsert ...
+argo-deployments repo add https://repo --upsert ...
 ```
 
 ## Common Workflows
@@ -474,23 +474,23 @@ argocd repo add https://repo --upsert ...
 ### Deploy and Wait Pattern
 
 ```bash
-argocd app sync myapp --prune --async
-argocd app wait myapp --health --sync --timeout 300
+argo-deployments app sync myapp --prune --async
+argo-deployments app wait myapp --health --sync --timeout 300
 ```
 
 ### Canary/Blue-Green with Argo Rollouts
 
 ```bash
 # Promote rollout
-argocd app actions run myapp promote --kind Rollout --resource-name my-rollout
+argo-deployments app actions run myapp promote --kind Rollout --resource-name my-rollout
 ```
 
 ### Multi-Cluster Deployment
 
 ```bash
 # Register clusters
-argocd cluster add dev-context --name dev
-argocd cluster add prod-context --name prod
+argo-deployments cluster add dev-context --name dev
+argo-deployments cluster add prod-context --name prod
 
 # Use ApplicationSet with cluster generator
 ```

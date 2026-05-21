@@ -1,0 +1,11 @@
+apiVersion: v2
+name: edge
+version: 0.1.0
+type: application
+description: Edge stack (Kong DB-less + hello-world ingress)
+appVersion: "1.0.0"
+dependencies:
+  - name: kong
+    version: 2.48.0
+    repository: https://charts.konghq.com
+

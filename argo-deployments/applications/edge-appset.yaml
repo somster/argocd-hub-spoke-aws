@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: edge-appset
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: false
+  generators:
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchExpressions:
+                  - key: environment
+                    operator: NotIn
+                    values:
+                      - control-plane
+          - git:
+              repoURL: https://github.com/somster/argocd-hub-spoke-aws.git
+              revision: main
+              directories:
+                - path: argocd/apps/*
+  template:
+    metadata:
+      name: 'edge-{{path.basename}}-{{metadata.labels.environment}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+      labels:
+        app.kubernetes.io/part-of: edge-stack
+        edge.component: '{{path.basename}}'
+        edge.environment: '{{metadata.labels.environment}}'
+    spec:
+      project: edge-project
+      destination:
+        name: '{{name}}'
+        namespace: edge
+      source:
+        repoURL: https://github.com/somster/argocd-hub-spoke-aws.git
+        targetRevision: main
+        path: '{{path}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
+

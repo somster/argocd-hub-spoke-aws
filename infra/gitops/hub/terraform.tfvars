@@ -1,2 +1,2 @@
-project_name       = "illand"
-kubernetes_version = "1.30"
+project_name = "illand"
+environment  = "prod"

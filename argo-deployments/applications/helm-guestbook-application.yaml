@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-guestbook
+  namespace: argo-deployments
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: helm-guestbook
+    helm:
+      valueFiles:
+        - values-production.yaml
+  destination:
+    server: arn:aws:eks:ap-southeast-1:675629362743:cluster/test-cluster
+    namespace: helm-guestbook
+  ignoreDifferences:
+    - group: ""
+      kind: Service
+      name: helm-guestbook
+      namespace: helm-guestbook
+      jsonPointers:
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-scheme
+        - /metadata/annotations/service.beta.kubernetes.io~1aws-load-balancer-nlb-target-type
+        - /spec/loadBalancerClass
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

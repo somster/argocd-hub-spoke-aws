@@ -114,7 +114,7 @@ To verify the changes:
 
 2. Deploy the infrastructure:
    ```bash
-   cd infra/eks-argocd
+   cd infra/eks-argo-deployments
    terraform init
    terraform plan
    terraform apply
@@ -132,3 +132,38 @@ To verify the changes:
 ## Reference Documentation
 
 See [SSO_GROUPS_SETUP.md](./infra/eks-argocd/SSO_GROUPS_SETUP.md) for complete setup and configuration guide.
+
+---
+
+# EKS Bootstrap / ArgoCD Terraform Apply Recovery (2026-05-18)
+
+## Issue Found
+`terraform apply` for `infra/gitops/hub` was not completing. Helm bootstrap for ArgoCD was failing/stalling, initially suspected to be caused by missing node groups.
+
+## What Actually Broke
+1. Node group creation was eventually successful (`3` workers became `Ready`), so missing nodes were not the final blocker.
+2. ArgoCD release became stuck in Helm `pending-install` / operation-in-progress state.
+3. ArgoCD pods repeatedly failed with:
+   - `aws-cni failed (add): failed to assign an IP address to container`
+4. Root runtime blocker: AWS VPC CNI pod IP assignment path.
+
+## Fixes Applied
+1. Recovered Helm/Terraform flow:
+   - cleaned stuck ArgoCD release state
+   - re-ran apply sequence after node group availability
+2. Runtime network recovery:
+   - restarted `aws-node` daemonset
+   - recycled ArgoCD pods
+3. Persisted CNI fix in Terraform (`infra/gitops/hub/main.tf`, `vpc-cni` addon env):
+   - `ENABLE_PREFIX_DELEGATION = "false"`
+   - `WARM_IP_TARGET = "5"`
+4. Added provider flexibility in Terraform:
+   - new variable `aws_assume_role_arn`
+   - AWS provider now conditionally applies `assume_role` via dynamic block (default preserves existing behavior)
+
+## Final State
+1. `terraform apply` completed successfully.
+2. `terraform plan -refresh=false` returns no changes.
+3. EKS nodes: `3 Ready`.
+4. ArgoCD Helm release: `deployed`.
+5. ArgoCD pods: all `Running`.

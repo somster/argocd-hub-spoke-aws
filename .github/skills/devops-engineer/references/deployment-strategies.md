@@ -100,7 +100,7 @@ kubectl rollout status deployment/app
 
 ### ArgoCD Rollback
 ```bash
-argocd app rollback app-prod --revision=123
+argo-deployments app rollback app-prod --revision=123
 ```
 
 ### Terraform Rollback
