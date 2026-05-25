@@ -20,7 +20,7 @@ spec:
               repoURL: https://github.com/somster/argocd-hub-spoke-aws.git
               revision: main
               directories:
-                - path: argocd/apps/*
+                - path: argo-deployments/apps/*
   template:
     metadata:
       name: 'edge-{{path.basename}}-{{metadata.labels.environment}}'

@@ -8,8 +8,8 @@ spec:
   sourceRepos:
     - "*"
   destinations:
-    - namespace: '*'
-      server: https://kubernetes.default.svc
+    - namespace: edge
+      server: '*'
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

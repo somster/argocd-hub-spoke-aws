@@ -16,8 +16,8 @@ The hello-world workload is managed separately from:
 ## Local render test
 
 ```bash
-helm dependency build /Users/somnath.kapoor/vibes/argo_greenfield/argo-deployments/apps/edge
-helm template edge /Users/somnath.kapoor/vibes/argo_greenfield/argo-deployments/apps/edge
+helm dependency build /Users/somnath.kapoor/vibes/argo-greenfield/argo-deployments/apps/edge
+helm template edge /Users/somnath.kapoor/vibes/argo-greenfield/argo-deployments/apps/edge
 ```
 
 ## Path to configure on cluster annotations
