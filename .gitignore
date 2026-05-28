@@ -4,7 +4,7 @@
 
 # Ignore editor settings
 .vscode
-
+.idea
 # Ignore Terraform working directories anywhere in the repository
 **/.terraform/
 **/.terraform/**
